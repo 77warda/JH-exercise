@@ -1,6 +1,6 @@
 import { OnInit } from "@angular/core";
 import { Component } from "@angular/core";
-import { from, reduce } from "rxjs";
+import { concatAll, from, reduce } from "rxjs";
 import { concatMap, map, of, zip } from "rxjs";
 
 @Component({
@@ -23,6 +23,10 @@ export class AppComponent implements OnInit {
   largestBox = [];
   smallestBoxart = [];
   videoIdAndBookmarkIdPairs = [];
+  newZip = [];
+  movieData2 = [];
+  powerfulQuery = [];
+  deepTreesData = [];
   ngOnInit(): void {
     this.getData();
     console.log("3", this.videoAndTitle);
@@ -42,6 +46,14 @@ export class AppComponent implements OnInit {
     this.smallestBox();
     this.zippingData();
     console.log("21", this.videoIdAndBookmarkIdPairs);
+    this.newzip();
+    console.log("22", this.newZip);
+    this.newMovieData2();
+    console.log("24", this.movieData2);
+    this.powerful();
+    console.log("25", this.powerfulQuery);
+    this.deeperTrees();
+    console.log("26", this.deepTreesData);
   }
   // =====================================Exercise 3 =============================================
   getData() {
@@ -524,5 +536,317 @@ export class AppComponent implements OnInit {
       this.videoIdAndBookmarkIdPairs.push(pair);
     });
     return this.videoIdAndBookmarkIdPairs;
+  }
+  newzip() {
+    var a = from([1, 2, 3]);
+    var b = from([4, 5, 6]);
+    zip(a, b)
+      .pipe(map(([valueA, valueB]) => valueA + valueB)) //I've to add data so used map
+      .subscribe((x) => console.log("warda", this.newZip.push(x)));
+  }
+  newMovieData2() {
+    var movieLists = [
+      {
+        name: "New Releases",
+        videos: [
+          {
+            id: 70111470,
+            title: "Die Hard",
+            boxarts: [
+              {
+                width: 150,
+                height: 200,
+                url: "http://cdn-0.nflximg.com/images/2891/DieHard150.jpg",
+              },
+              {
+                width: 200,
+                height: 200,
+                url: "http://cdn-0.nflximg.com/images/2891/DieHard200.jpg",
+              },
+            ],
+            url: "http://api.netflix.com/catalog/titles/movies/70111470",
+            rating: 4.0,
+            interestingMoments: [
+              { type: "End", time: 213432 },
+              { type: "Start", time: 64534 },
+              { type: "Middle", time: 323133 },
+            ],
+          },
+          {
+            id: 654356453,
+            title: "Bad Boys",
+            boxarts: [
+              {
+                width: 200,
+                height: 200,
+                url: "http://cdn-0.nflximg.com/images/2891/BadBoys200.jpg",
+              },
+              {
+                width: 140,
+                height: 200,
+                url: "http://cdn-0.nflximg.com/images/2891/BadBoys140.jpg",
+              },
+            ],
+            url: "http://api.netflix.com/catalog/titles/movies/70111470",
+            rating: 5.0,
+            interestingMoments: [
+              { type: "End", time: 54654754 },
+              { type: "Start", time: 43524243 },
+              { type: "Middle", time: 6575665 },
+            ],
+          },
+        ],
+      },
+      {
+        name: "Instant Queue",
+        videos: [
+          {
+            id: 65432445,
+            title: "The Chamber",
+            boxarts: [
+              {
+                width: 130,
+                height: 200,
+                url: "http://cdn-0.nflximg.com/images/2891/TheChamber130.jpg",
+              },
+              {
+                width: 200,
+                height: 200,
+                url: "http://cdn-0.nflximg.com/images/2891/TheChamber200.jpg",
+              },
+            ],
+            url: "http://api.netflix.com/catalog/titles/movies/70111470",
+            rating: 4.0,
+            interestingMoments: [
+              { type: "End", time: 132423 },
+              { type: "Start", time: 54637425 },
+              { type: "Middle", time: 3452343 },
+            ],
+          },
+          {
+            id: 675465,
+            title: "Fracture",
+            boxarts: [
+              {
+                width: 200,
+                height: 200,
+                url: "http://cdn-0.nflximg.com/images/2891/Fracture200.jpg",
+              },
+              {
+                width: 120,
+                height: 200,
+                url: "http://cdn-0.nflximg.com/images/2891/Fracture120.jpg",
+              },
+              {
+                width: 300,
+                height: 200,
+                url: "http://cdn-0.nflximg.com/images/2891/Fracture300.jpg",
+              },
+            ],
+            url: "http://api.netflix.com/catalog/titles/movies/70111470",
+            rating: 5.0,
+            interestingMoments: [
+              { type: "End", time: 45632456 },
+              { type: "Start", time: 234534 },
+              { type: "Middle", time: 3453434 },
+            ],
+          },
+        ],
+      },
+    ];
+
+    return from(movieLists)
+      .pipe(
+        map((category) =>
+          category.videos.map((video) => ({
+            id: video.id,
+            title: video.title,
+            middleInterestingMomentTime: video.interestingMoments.find(
+              (moment) => moment.type === "Middle"
+            ).time,
+            smallestBoxArtUrl: video.boxarts.reduce((x, current) =>
+              current.width * current.height < x.width * x.height ? current : x
+            ).url,
+          }))
+        ),
+        concatAll()
+      )
+      .subscribe((result) => console.log(this.movieData2.push(result)));
+  }
+  powerful() {
+    var lists = [
+        {
+          id: 5434364,
+          name: "New Releases",
+        },
+        {
+          id: 65456475,
+          name: "Thrillers",
+        },
+      ],
+      videos = [
+        {
+          listId: 5434364,
+          id: 65432445,
+          title: "The Chamber",
+        },
+        {
+          listId: 5434364,
+          id: 675465,
+          title: "Fracture",
+        },
+        {
+          listId: 65456475,
+          id: 70111470,
+          title: "Die Hard",
+        },
+        {
+          listId: 65456475,
+          id: 654356453,
+          title: "Bad Boys",
+        },
+      ];
+
+    return from(lists)
+      .pipe(
+        map((category) => {
+          return {
+            name: category.name,
+            videos: videos
+              .filter((video) => video.listId === category.id)
+              .map((video) => {
+                return {
+                  id: video.id,
+                  title: video.title,
+                };
+              }),
+          };
+        })
+      )
+      .subscribe((result) => console.log(this.powerfulQuery.push(result)));
+  }
+  deeperTrees() {
+    var lists = [
+        {
+          id: 5434364,
+          name: "New Releases",
+        },
+        {
+          id: 65456475,
+          name: "Thrillers",
+        },
+      ],
+      videos = [
+        {
+          listId: 5434364,
+          id: 65432445,
+          title: "The Chamber",
+        },
+        {
+          listId: 5434364,
+          id: 675465,
+          title: "Fracture",
+        },
+        {
+          listId: 65456475,
+          id: 70111470,
+          title: "Die Hard",
+        },
+        {
+          listId: 65456475,
+          id: 654356453,
+          title: "Bad Boys",
+        },
+      ],
+      boxarts = [
+        {
+          videoId: 65432445,
+          width: 130,
+          height: 200,
+          url: "http://cdn-0.nflximg.com/images/2891/TheChamber130.jpg",
+        },
+        {
+          videoId: 65432445,
+          width: 200,
+          height: 200,
+          url: "http://cdn-0.nflximg.com/images/2891/TheChamber200.jpg",
+        },
+        {
+          videoId: 675465,
+          width: 200,
+          height: 200,
+          url: "http://cdn-0.nflximg.com/images/2891/Fracture200.jpg",
+        },
+        {
+          videoId: 675465,
+          width: 120,
+          height: 200,
+          url: "http://cdn-0.nflximg.com/images/2891/Fracture120.jpg",
+        },
+        {
+          videoId: 675465,
+          width: 300,
+          height: 200,
+          url: "http://cdn-0.nflximg.com/images/2891/Fracture300.jpg",
+        },
+        {
+          videoId: 70111470,
+          width: 150,
+          height: 200,
+          url: "http://cdn-0.nflximg.com/images/2891/DieHard150.jpg",
+        },
+        {
+          videoId: 70111470,
+          width: 200,
+          height: 200,
+          url: "http://cdn-0.nflximg.com/images/2891/DieHard200.jpg",
+        },
+        {
+          videoId: 654356453,
+          width: 200,
+          height: 200,
+          url: "http://cdn-0.nflximg.com/images/2891/BadBoys200.jpg",
+        },
+        {
+          videoId: 654356453,
+          width: 140,
+          height: 200,
+          url: "http://cdn-0.nflximg.com/images/2891/BadBoys140.jpg",
+        },
+      ],
+      bookmarks = [
+        { videoId: 65432445, time: 32432 },
+        { videoId: 675465, time: 3534543 },
+        { videoId: 70111470, time: 645243 },
+        { videoId: 654356453, time: 984934 },
+      ];
+
+    return from(lists)
+      .pipe(
+        map((category) => {
+          return {
+            name: category.name,
+            videos: videos
+              .filter((video) => video.listId === category.id)
+              .map((video) => {
+                return {
+                  id: video.id,
+                  title: video.title,
+                  time: bookmarks
+                    .filter((bookmark) => bookmark.videoId === video.id)
+                    .map((bookmark) => bookmark.time)[0],
+                  boxart: boxarts
+                    .filter((boxart) => boxart.videoId === video.id)
+                    .reduce((x, current) =>
+                      current.width * current.height < x.width * x.height
+                        ? current
+                        : x
+                    ).url,
+                };
+              }),
+          };
+        })
+      )
+      .subscribe((result) => console.log(this.deepTreesData.push(result)));
   }
 }
